@@ -7,9 +7,10 @@ import (
 )
 
 type DNSSettings struct {
-	DNSProtocol string
-	ServerURL   string `plist:",omitempty"`
-	ServerName  string `plist:",omitempty"`
+	DNSProtocol     string
+	ServerURL       string `plist:",omitempty"`
+	ServerName      string `plist:",omitempty"`
+	ServerAddresses []string
 }
 
 type PayloadContent = struct {
@@ -73,14 +74,16 @@ func handleMobileConfig(w http.ResponseWriter, d DNSSettings) {
 
 func handleMobileConfigDoh(w http.ResponseWriter, r *http.Request) {
 	handleMobileConfig(w, DNSSettings{
-		DNSProtocol: "HTTPS",
-		ServerURL:   "https://dns.adguard.com/dns-query",
+		DNSProtocol:     "HTTPS",
+		ServerURL:       "https://dns.adguard.com/dns-query",
+		ServerAddresses: []string{getDNSEncryption().https},
 	})
 }
 
 func handleMobileConfigDot(w http.ResponseWriter, r *http.Request) {
 	handleMobileConfig(w, DNSSettings{
-		DNSProtocol: "TLS",
-		ServerName:  "dns.adguard.com",
+		DNSProtocol:     "TLS",
+		ServerName:      "dns.adguard.com",
+		ServerAddresses: []string{getDNSEncryption().tls},
 	})
 }
